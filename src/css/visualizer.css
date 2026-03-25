@@ -1,0 +1,188 @@
+/* visualizer.css - LLM Pipeline Tutorial SVG Visualizer Styles */
+
+/* --- 1. SVG CONTAINER --- */
+.svg-container {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+
+/* --- 2. NODE BASE --- */
+.svg-node {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.svg-node:hover > .node-shape {
+  stroke: var(--accent-blue);
+  stroke-width: 3;
+  filter: brightness(1.25);
+  transform: scale(1.06);
+  transform-origin: center;
+}
+
+.svg-node.highlighted > .node-shape {
+  stroke: var(--accent-blue);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.7));
+}
+
+.svg-node.active > .node-shape {
+  stroke: var(--accent-gold);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8));
+}
+/* --- 3. NODE TYPES --- */
+
+/* Input node — green circle */
+.node-input .node-shape {
+  fill: #10b981;
+  stroke: #059669;
+  stroke-width: 2;
+}
+.node-input:hover .node-shape, .node-input.highlighted .node-shape {
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.7));
+}
+
+/* Process node — blue rectangle */
+.node-process .node-shape {
+  fill: #3b82f6;
+  stroke: #2563eb;
+  stroke-width: 2;
+  rx: 8;
+}
+.node-process:hover .node-shape, .node-process.highlighted .node-shape {
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.7));
+}
+
+/* Validate node — gold diamond (rotate 45deg square) */
+.node-validate .node-shape {
+  fill: #f59e0b;
+  stroke: #d97706;
+  stroke-width: 2;
+}
+.node-validate:hover .node-shape, .node-validate.highlighted .node-shape {
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.7));
+}
+
+/* Output node — green circle (same as input) */
+.node-output .node-shape {
+  fill: #10b981;
+  stroke: #059669;
+  stroke-width: 2;
+}
+.node-output:hover .node-shape, .node-output.highlighted .node-shape {
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.7));
+}
+
+/* Error node — red circle */
+.node-error .node-shape {
+  fill: #ef4444;
+  stroke: #dc2626;
+  stroke-width: 2;
+}
+.node-error:hover .node-shape, .node-error.highlighted .node-shape {
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.7));
+}
+
+/* --- 4. NODE TEXT --- */
+.svg-node-text {
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: #fff;
+  pointer-events: none;
+  user-select: none;
+}
+
+.svg-node-sublabel {
+  font-size: 11px;
+  fill: rgba(255,255,255,0.75);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* --- 5. EDGES --- */
+.svg-edge {
+  stroke: #334155;
+  stroke-width: 2;
+  fill: none;
+  cursor: default;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+  marker-end: url(#arrowhead);
+}
+.svg-edge:hover {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+.svg-edge.animated {
+  stroke-dasharray: 8 4;
+  animation: flowAnimation 2s linear infinite;
+}
+.svg-edge.active {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+.svg-edge.success {
+  stroke: #10b981;
+}
+.svg-edge.error {
+  stroke: #ef4444;
+}
+
+/* --- 6. EDGE LABELS --- */
+.svg-edge-label {
+  font-size: 12px;
+  fill: #94a3b8;
+  text-anchor: middle;
+  pointer-events: none;
+  background: #1e293b;
+}
+
+/* --- 7. SVG MARKERS (arrowhead definitions) --- */
+.arrowhead { fill: #334155; }
+.arrowhead-active { fill: #3b82f6; }
+.arrowhead-success { fill: #10b981; }
+.arrowhead-error { fill: #ef4444; }
+
+/* --- 8. TOOLTIP OVERLAY --- */
+.svg-tooltip {
+  position: absolute;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 200;
+  max-width: 220px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+  animation: fadeIn 0.15s ease;
+}
+.svg-tooltip.hidden { display: none; }
+
+/* --- 9. PIPELINE STEP LABELS (above SVG) --- */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* --- 10. SCORE / GAUGE BAR --- */
+.score-gauge-track {
+  fill: #334155;
+}
+.score-gauge-fill {
+  fill: url(#gaugeGradient);
+  animation: fillGauge 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

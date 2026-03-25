@@ -1,0 +1,48 @@
+/* animations.css - LLM Pipeline Tutorial Animations */
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+@keyframes slideInUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes flowAnimation { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -20; } }
+@keyframes dotMove { from { offset-distance: 0%; opacity: 1; } 90% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 4px rgba(59,130,246,0.4)); } 50% { filter: drop-shadow(0 0 16px rgba(59,130,246,0.9)); } }
+@keyframes gateClose { 0% { transform: scaleX(1); } 50% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+@keyframes fillGauge { from { width: 0%; } to { width: var(--gauge-fill, 100%); } }
+@keyframes nodeHighlight { 0% { r: 28; opacity: 1; } 100% { r: 44; opacity: 0; } }
+@keyframes scaleIn { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+
+/* UTILITY ANIMATION CLASSES */
+.animate-fadeIn  { animation: fadeIn 0.5s ease both; }
+.animate-fadeOut { animation: fadeOut 0.5s ease both; }
+.animate-slideIn { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) both; }
+.animate-slideUp { animation: slideInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) both; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
+.animate-gate { animation: gateClose 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.animate-scaleIn { animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* SLIDE TRANSITIONS */
+.fade-enter  { animation: fadeIn 0.4s ease both; }
+.fade-exit   { animation: fadeOut 0.25s ease both; }
+.slide-enter { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) both; }
+.slide-exit  { animation: slideOutLeft 0.25s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* SVG ANIMATION CLASSES */
+.edge-flow { stroke-dasharray: 8 4; animation: flowAnimation 1.5s linear infinite; }
+.node-highlight { fill: none; stroke: var(--accent-blue); stroke-width: 2; animation: nodeHighlight 1s ease-out forwards; transform-origin: center; }
+.flow-dot { r: 4; fill: var(--accent-blue); animation: dotMove 2s linear infinite; offset-rotate: 0deg; }
+.gauge-fill { animation: fillGauge 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* STAGGER DELAYS */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

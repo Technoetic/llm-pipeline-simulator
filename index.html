@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLM 파이프라인 시뮬레이터 — 제로 환각 챗봇의 내부</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-Dyi9o_wJ.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Be2Bfl4B.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 헤더 -->
+    <header class="header">
+      <h1 class="logo">🔬 LLM 파이프라인 시뮬레이터</h1>
+      <p class="subtitle">챗봇에 질문하면, <strong>내부에서 일어나는 전체 과정</strong>을 실시간으로 봅니다</p>
+    </header>
+
+    <!-- 메인 2열 레이아웃 -->
+    <div class="main-grid">
+      <!-- 좌측: 파이프라인 시각화 + 로그 -->
+      <div class="pipeline-col">
+        <h2 class="col-title">⚙️ 파이프라인 내부</h2>
+
+        <!-- 파이프라인 노드 (완전 동적) -->
+        <div class="pipeline-track">
+          <div class="phase-node has-parallel" id="node-analyze" data-phase="analyze">
+            <div class="node-icon">🧠</div>
+            <div class="node-label">질문 분석</div>
+            <div class="node-sub">LLM 동적 계획</div>
+            <div class="parallel-tasks" id="parallel-analyze"></div>
+            <div class="node-detail"></div>
+          </div>
+          <div class="edge" id="edge-0-1"></div>
+
+          <div class="phase-node has-parallel" id="node-db" data-phase="db">
+            <div class="node-icon">🗄️</div>
+            <div class="node-label">DB 실행</div>
+            <div class="node-sub">Supabase</div>
+            <div class="parallel-tasks" id="parallel-db"></div>
+            <div class="node-detail"></div>
+          </div>
+          <div class="edge" id="edge-1-2"></div>
+
+          <div class="phase-node has-parallel" id="node-answer" data-phase="answer">
+            <div class="node-icon">💬</div>
+            <div class="node-label">답변 생성</div>
+            <div class="node-sub">LLM 병렬</div>
+            <div class="parallel-tasks" id="parallel-answer"></div>
+            <div class="node-detail"></div>
+          </div>
+          <div class="edge" id="edge-2-3"></div>
+
+          <div class="phase-node" id="node-output" data-phase="output">
+            <div class="node-icon">📤</div>
+            <div class="node-label">최종 답변</div>
+            <div class="node-sub"></div>
+            <div class="node-detail"></div>
+          </div>
+        </div>
+
+        <!-- 범례 -->
+        <div class="legend">
+          <span class="legend-item"><span class="dot dot-idle"></span> 대기</span>
+          <span class="legend-item"><span class="dot dot-active"></span> 처리 중</span>
+          <span class="legend-item"><span class="dot dot-done"></span> 완료</span>
+          <span class="legend-item"><span class="dot dot-skip"></span> 스킵</span>
+          <span class="legend-item"><span class="dot dot-fail"></span> 폐기</span>
+        </div>
+
+        <!-- 로그 -->
+        <div class="log-panel">
+          <h3 class="panel-title">📋 처리 로그</h3>
+          <div id="log-output" class="log-output">
+            <div class="log-empty">챗봇에 질문하면 여기에 내부 처리 과정이 실시간으로 표시됩니다</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 우측: 챗봇 (실제 서비스와 동일한 대화형 UI) -->
+      <div class="chat-col">
+        <div class="chatbot-panel">
+          <div class="chatbot-header">
+            <span>🤖 AI 분석 챗봇</span>
+            <span class="chatbot-sport">skeleton</span>
+          </div>
+
+          <div id="chatbot-messages" class="chatbot-messages">
+            <div class="chatbot-msg bot">
+              <div class="chatbot-bubble bot">안녕하세요! 경기 기록, 선수 비교, 환경 분석 등을 질문해 주세요.</div>
+            </div>
+          </div>
+
+          <!-- 프리셋 버튼 -->
+          <div class="chatbot-presets">
+            <button class="preset" data-q="여찬혁 vs 김지수">여찬혁 vs 김지수</button>
+            <button class="preset" data-q="서리가 기록에 영향을 주나?">서리 영향</button>
+            <button class="preset" data-q="여찬혁">여찬혁</button>
+            <button class="preset" data-q="12월 평균 기록은?">12월 평균</button>
+            <button class="preset" data-q="누가 가장 일관적이야?">일관성 순위</button>
+            <button class="preset" data-q="스타트 0.1초 줄이면?">스타트 영향</button>
+          </div>
+
+          <div class="chatbot-input-wrap">
+            <input id="chatbot-input" type="text" class="chatbot-input" placeholder="질문을 입력하세요..." autocomplete="off" />
+            <button id="chatbot-send" class="chatbot-send">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p class="footer-text">skeleton-analysis 제로 환각 LLM 파이프라인 시뮬레이터 · 모든 숫자는 Supabase DB에서 옵니다 · LLM: Gemini 2.5 Flash Lite</p>
+    </footer>
+  </div>
+
+  <!-- LLM 답변 미리보기 팝업 -->
+  <div id="llm-preview" class="llm-preview" style="display:none;">
+    <div class="llm-preview-header">
+      <span id="llm-preview-title"></span>
+      <button id="llm-preview-close" class="llm-preview-close">&times;</button>
+    </div>
+    <div id="llm-preview-body" class="llm-preview-body"></div>
+  </div>
+
+</body>
+</html>
